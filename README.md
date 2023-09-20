@@ -1,3 +1,31 @@
+# A fork from [oalieno/asm2vec-pytorch](https://github.com/oalieno/asm2vec-pytorch)
+
+Mostly the same (original help given below is still relevant). Although there are some hacks and tips added:
+1. If you don't have CUDA, you should better manually install pytorch with CPU only:
+```
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+```
+2. radare2 can be found [here](https://github.com/radareorg/radare2) and installed like this:
+```
+git clone https://github.com/radareorg/radare2 && radare2/sys/install.sh
+```
+3. bin2asm removes functions with duplicate names. Thus, if you want a database from several binary programs, you shall run it separately for each of them and save results to different directories (probably). Note that this script stores disassembled data in text format, so you can watch what the code is in resulting directory.
+4. There is an example added: /bin/wget5 contains wget1.5.3 binary, and /bin/wget6 contains wget1.6. I preprocessed them as following:
+```
+python scripts/bin2asm.py -i bin/wget5 -o asm/wget5
+python scripts/bin2asm.py -i bin/wget6 -o asm/wget6
+```
+5. I recommend playing with different model training datasets. It seems interesting and I lack a clue how to do it best.
+6. There is scripts/evaluate.py script added. It compares the files in two directories and writes the comparison results in output stream (more detailes) and in json file (for automatic comparison). Model options are the same with compare.py. It checks the filename difference$ if it troubles you, you may remove the condition on line 79 to disable this check. Note that this script needs tqdm (just to make it look better). The script may be called this way (matches all wget5 fragments to some wget6 fragments):
+```
+python scripts/evaluate.py -i1 asm/wget5/ -i2 asm/wget6 -m model.pt
+```
+7. Good luck!
+
+TODO: any ideas how to make evaluate.py faster without accuracy loss and shady schemes with tokens are appreciated.
+
+# Here ends the part added by andralet and starts the original README text
+
 # asm2vec-pytorch
 
 <a><img alt="release 1.0.0" src="https://img.shields.io/badge/release-v1.0.0-yellow?style=for-the-badge"></a>
